@@ -1,17 +1,10 @@
-// Some resources I have used:
-// https://github.com/ssg/TurkishId
-// https://github.com/metinorak/TurkishId
-// https://seyler.eksisozluk.com/tc-kimlik-numaralarindaki-inanilmaz-algoritma
-// http://www.halitalptekin.com/tc-kimlik-no-algoritmasi.html
-// http://www.hurriyet.com.tr/gundem/tc-kimliklerinin-algoritmasi-cozuldu-15485772
-// https://onedio.com/haber/tc-kimlik-numarasi-hakkinda-sizi-sasirtacak-5-gercek-538999
-
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 #include <QStatusBar>
 #include <QDebug>
 #include <QRandomGenerator>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -50,7 +43,9 @@ bool MainWindow::TurkishIdCheck(QString TCstring)
     long TCnumber = TCstring.toLong(&ok, 10);
 
     if (!ok)
+    {
         return false;
+    }
 
     // TC ID numbers can't be empty or null
     if (TCstring.isEmpty() or TCstring.isNull())
@@ -123,7 +118,7 @@ void MainWindow::on_pushButtonGenerate_clicked()
             int random = gen.bounded(0, 899999998);
             ui->plainTextEditGenerate->insertPlainText(TurkishIdGenerate(random) + " ");
             //ui->plainTextEditGenerate->appendPlainText(TurkishIdGenerate(i));
-            if (i % 100 == 0)
+            if (i != 0 and i % 99 == 0)
             {
                 ui->plainTextEditGenerate->insertPlainText("\n");
             }
@@ -140,7 +135,7 @@ void MainWindow::on_pushButtonGenerate_clicked()
             }
             ui->plainTextEditGenerate->insertPlainText(TurkishIdGenerate(i + z) + " ");
             //ui->plainTextEditGenerate->appendPlainText(TurkishIdGenerate(i));
-            if (i % 100 == 0)
+            if (i != 0 and i % 99 == 0)
             {
                 ui->plainTextEditGenerate->insertPlainText("\n");
             }
@@ -173,4 +168,9 @@ QString MainWindow::TurkishIdGenerate(unsigned int y)
     int secondChecksum = (oddSum + evenSum + firstChecksum) % 10;
 
     return QString::number(x) + QString::number(firstChecksum) + QString::number(secondChecksum);
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    QMessageBox::information(this, "About", "This application is written for <b>educational purposes</b> only.<br>Do not use it for any illegal purpose.");
 }
